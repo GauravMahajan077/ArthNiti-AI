@@ -1,36 +1,16 @@
+
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "functions": {
-    "backend/app.py": {
-      "runtime": "python3.12",
-      "maxDuration": 30
-    }
-  },
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/backend/app.py"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/frontend/index.html"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
+    "builds": [
         {
-          "key": "Cache-Control",
-          "value": "s-maxage=0, max-age=0"
+            "src": "backend/app.py",
+            "use": "@vercel/python"
         }
-      ]
-    }
-  ],
-  "ignore": [
-    "backend/__pycache__/**",
-    "backend/*.pyc",
-    "backend/.env",
-    "*.log"
-  ]
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "backend/app.py"
+        }
+    ]
+    
 }
