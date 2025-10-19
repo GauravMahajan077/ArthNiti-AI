@@ -27,7 +27,7 @@
       ]
     }
   ],
-  "ignores": [
+  "ignore": [
     "backend/__pycache__/**",
     "backend/*.pyc",
     "backend/.env",
