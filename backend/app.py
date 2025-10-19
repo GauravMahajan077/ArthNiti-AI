@@ -1,10 +1,11 @@
 import os
+import json  # ✅ FIX: Global import
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
 import google.generativeai as genai
 from datetime import datetime, timedelta
-import requests  # ✅ FIX: Use proper requests library
+import requests
 
 # --- Local Imports ---
 from scoring_engine import calculate_credit_score
@@ -21,7 +22,7 @@ try:
     else:
         genai.configure(api_key=api_key)
         model = genai.GenerativeModel(
-            model_name='gemini-2.0-flash-exp',
+            model_name='gemini-1.5-flash',  # ✅ FIX: Valid model name (update to 2.0 if available)
             generation_config={"response_mime_type": "application/json"}
         )
         print("--- Gemini client configured successfully. ---")
@@ -33,14 +34,13 @@ except Exception as e:
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', 'dev-secret-change-in-prod')
 
-# ✅ FIX: Proper CORS configuration for OAuth with sessions
+# ✅ FIX: CORS for Vercel (add * for prod domains; restrict later)
 CORS(app, 
      supports_credentials=True,
-     origins=['http://localhost:5500', 'http://127.0.0.1:5500', 'http://localhost:3000', 'http://127.0.0.1:3000'],
+     origins=['*'],  # Temp for deployment; set to your Vercel URL later
      allow_headers=['Content-Type'],
      expose_headers=['Set-Cookie'],
      methods=['GET', 'POST', 'OPTIONS'])
-
 
 # ===== HELPER FUNCTIONS FOR HEALTH MONITOR =====
 
@@ -179,8 +179,7 @@ def get_health_insights(model, health_data):
         """
         
         response = model.generate_content(prompt)
-        import json
-        return json.loads(response.text)
+        return json.loads(response.text)  # ✅ FIX: Use global json
         
     except Exception as e:
         print(f"Error getting health insights: {e}")
@@ -219,8 +218,7 @@ def get_personalized_finance_insight(model, user_data):
         """
         
         response = model.generate_content(prompt)
-        import json
-        return json.loads(response.text)
+        return json.loads(response.text)  # ✅ FIX: Use global json
     
     except Exception as e:
         print(f"Error generating personalized insight: {e}")
@@ -592,8 +590,7 @@ def get_game_challenges():
     try:
         real_score = request.args.get('realScore', 720)
         user_data_str = request.args.get('userData', '{}')
-        import json
-        user_data = json.loads(user_data_str)
+        user_data = json.loads(user_data_str)  # ✅ FIX: Use global json
         
         challenges = [
             {
@@ -692,8 +689,12 @@ def health_check():
     })
 
 
-# ===== START SERVER =====
+# ===== WSGI EXPORT FOR VERCEL (CRITICAL FIX) =====
+# This makes your Flask app invocable as a serverless function
+application = app  # ✅ FIX: Export WSGI app for Vercel Python runtime
 
+
+# ===== LOCAL DEV ONLY =====
 if __name__ == '__main__':
     print("\n" + "="*50)
     print("🚀 ArthNiti Backend Server Starting...")
