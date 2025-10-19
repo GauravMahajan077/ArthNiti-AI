@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Clash - ArthNiti Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,500;9..40,700&family=Space+Mono&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0055FF;
+            --secondary: #00E5A0;
+            --accent: #FFB800;
+            --danger: #FF3366;
+            --color-background: #FFFDF5;
+            --color-surface-primary: #FFFFFF;
+            --color-surface-secondary: #FFFDF5;
+            --color-text-primary: #1A1A1A;
+            --color-text-secondary: #757575;
+            --color-shadow-border: #1A1A1A;
+            --font-heading: 'DM Sans', sans-serif;
+            --font-body: 'Space Mono', monospace;
+        }
+
+        [data-theme="dark"] {
+            --color-background: #1A1A1A;
+            --color-surface-primary: #2C2C2C;
+            --color-surface-secondary: #333333;
+            --color-text-primary: #FFFDF5;
+            --color-text-secondary: #a0a0a0;
+            --color-shadow-border: #000000;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-background);
+            color: var(--color-text-primary);
+            line-height: 1.6;
+            padding: 20px;
+            transition: background-color 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: var(--color-surface-primary);
+            border: 4px solid var(--color-shadow-border);
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 8px 8px 0 var(--color-shadow-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header h1 {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            font-family: var(--font-heading);
+            padding: 10px 18px;
+            border: 3px solid var(--color-shadow-border);
+            background: var(--color-surface-primary);
+            color: var(--color-text-primary);
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.8rem;
+            box-shadow: 4px 4px 0 var(--color-shadow-border);
+            transition: all 0.1s;
+        }
+
+        .btn:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0 var(--color-shadow-border);
+        }
+
+        .btn:active {
+            transform: translate(4px, 4px);
+            box-shadow: none;
+        }
+
+        /* Game Stats Dashboard */
+        .game-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: var(--color-surface-primary);
+            border: 4px solid var(--color-shadow-border);
+            padding: 20px;
+            box-shadow: 6px 6px 0 var(--color-shadow-border);
+            text-align: center;
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+
+        /* Main Game Area */
+        .game-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .game-main {
+            background: var(--color-surface-primary);
+            border: 4px solid var(--color-shadow-border);
+            padding: 30px;
+            box-shadow: 8px 8px 0 var(--color-shadow-border);
+            min-height: 500px;
+        }
+
+        .game-sidebar {
+            background: var(--color-surface-secondary);
+            border: 4px solid var(--color-shadow-border);
+            padding: 25px;
+            box-shadow: 6px 6px 0 var(--color-shadow-border);
+        }
+
+        .section-title {
+            font-family: var(--font-heading);
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Scenario Cards */
+        .scenario-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: 6px solid var(--color-shadow-border);
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 8px 8px 0 var(--color-shadow-border);
+            color: white;
+        }
+
+        .scenario-title {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .scenario-text {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        /* Choice Buttons */
+        .choices-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .choice-btn {
+            background: var(--color-surface-primary);
+            border: 4px solid var(--color-shadow-border);
+            padding: 20px;
+            cursor: pointer;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            text-align: left;
+            box-shadow: 6px 6px 0 var(--color-shadow-border);
+            transition: all 0.2s;
+            color: var(--color-text-primary);
+            position: relative;
+        }
+
+        .choice-btn:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 4px 4px 0 var(--color-shadow-border);
+            background: var(--accent);
+        }
+
+        .choice-btn:active {
+            transform: translate(6px, 6px);
+            box-shadow: none;
+        }
+
+        .choice-icon {
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+
+        .choice-impact {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--color-text-secondary);
+            margin-top: 8px;
+        }
+
+        /* Result Popup */
+        .result-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--color-surface-primary);
+            border: 6px solid var(--color-shadow-border);
+            padding: 40px;
+            box-shadow: 12px 12px 0 var(--color-shadow-border);
+            z-index: 1000;
+            min-width: 400px;
+            max-width: 600px;
+            display: none;
+        }
+
+        .result-popup.show {
+            display: block;
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+            display: none;
+        }
+
+        .overlay.show {
+            display: block;
+        }
+
+        .result-icon {
+            font-size: 4rem;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .result-title {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .result-text {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .impact-display {
+            background: var(--color-surface-secondary);
+            border: 3px solid var(--color-shadow-border);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .impact-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .impact-positive {
+            color: var(--secondary);
+            font-weight: 700;
+        }
+
+        .impact-negative {
+            color: var(--danger);
+            font-weight: 700;
+        }
+
+        /* Progress Bar */
+        .level-progress {
+            background: var(--color-surface-secondary);
+            border: 4px solid var(--color-shadow-border);
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .progress-label {
+            font-size: 0.8rem;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .progress-bar-container {
+            background: var(--color-surface-primary);
+            border: 3px solid var(--color-shadow-border);
+            height: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--secondary);
+            transition: width 0.5s ease;
+            border-right: 3px solid var(--color-shadow-border);
+        }
+
+        /* Learning Tips */
+        .learning-tip {
+            background: var(--accent);
+            border: 4px solid var(--color-shadow-border);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 4px 4px 0 var(--color-shadow-border);
+            color: var(--color-shadow-border);
+        }
+
+        .tip-title {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        /* Event Log */
+        .event-log {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .event-item {
+            background: var(--color-surface-primary);
+            border: 3px solid var(--color-shadow-border);
+            padding: 15px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .event-time {
+            color: var(--color-text-secondary);
+            font-size: 0.7rem;
+        }
+
+        /* Start Screen */
+        .start-screen {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .game-logo {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .start-title {
+            font-family: var(--font-heading);
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .start-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-large {
+            padding: 20px 40px;
+            font-size: 1.2rem;
+            background: var(--primary);
+            color: white;
+            border: 4px solid var(--color-shadow-border);
+            box-shadow: 8px 8px 0 var(--color-shadow-border);
+        }
+
+        @media (max-width: 768px) {
+            .game-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .result-popup {
+                min-width: 90%;
+                padding: 25px;
+            }
+            
+            .game-dashboard {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💥 CREDIT CLASH</h1>
+            <div class="header-actions">
+                <button class="btn" onclick="window.history.back()">← BACK</button>
+                <button class="btn" onclick="resetGame()">🔄 RESTART</button>
+                <button class="btn" id="themeToggle">🌙</button>
+            </div>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="startScreen" class="game-main">
+            <div class="start-screen">
+                <div class="game-logo">🎮💰</div>
+                <h2 class="start-title">CREDIT CLASH</h2>
+                <p class="start-description">
+                    Welcome to Credit Clash! Make smart financial decisions, build your credit score, 
+                    and learn how real-world money management works. Each choice impacts your score, 
+                    savings, and financial future. Can you reach 850?
+                </p>
+                <button class="btn btn-large" onclick="startGame()">START GAME →</button>
+                
+                <div style="margin-top: 40px;">
+                    <h3 style="font-family: var(--font-heading); margin-bottom: 15px;">📚 YOU'LL LEARN:</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px;">
+                        <div class="learning-tip">
+                            <div class="tip-title">💳 Credit Scoring</div>
+                            <p>How your actions affect credit scores</p>
+                        </div>
+                        <div class="learning-tip">
+                            <div class="tip-title">💰 Budgeting</div>
+                            <p>Managing income vs expenses</p>
+                        </div>
+                        <div class="learning-tip">
+                            <div class="tip-title">📊 Debt Management</div>
+                            <p>Good debt vs bad debt</p>
+                        </div>
+                        <div class="learning-tip">
+                            <div class="tip-title">🏦 Savings Strategy</div>
+                            <p>Emergency funds & investments</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Dashboard -->
+        <div id="gameDashboard" style="display: none;">
+            <div class="game-dashboard">
+                <div class="stat-box">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-value" id="creditScore">500</div>
+                    <div class="stat-label">CREDIT SCORE</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-value" id="savings">₹0</div>
+                    <div class="stat-label">SAVINGS</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon">💼</div>
+                    <div class="stat-value" id="income">₹25k</div>
+                    <div class="stat-label">MONTHLY INCOME</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon">🔥</div>
+                    <div class="stat-value" id="streak">0</div>
+                    <div class="stat-label">GOOD DECISIONS</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-value" id="month">1</div>
+                    <div class="stat-label">MONTH</div>
+                </div>
+            </div>
+
+            <!-- Level Progress -->
+            <div class="level-progress">
+                <div class="progress-label">
+                    <span>LEVEL <span id="level">1</span>: CREDIT BEGINNER</span>
+                    <span><span id="xp">0</span>/100 XP</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill" id="xpBar" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Main Game Area -->
+            <div class="game-layout">
+                <div class="game-main">
+                    <div id="scenarioArea">
+                        <!-- Scenarios will be dynamically loaded here -->
+                    </div>
+                </div>
+
+                <div class="game-sidebar">
+                    <div class="section-title">
+                        <span>💡</span>
+                        <span>LEARNING TIP</span>
+                    </div>
+                    <div class="learning-tip" id="learningTip">
+                        <div class="tip-title">💳 Payment History Matters</div>
+                        <p>35% of your credit score comes from payment history. Always pay bills on time!</p>
+                    </div>
+
+                    <div class="section-title" style="margin-top: 30px;">
+                        <span>📜</span>
+                        <span>EVENT LOG</span>
+                    </div>
+                    <div class="event-log" id="eventLog">
+                        <div class="event-item">
+                            <div class="event-time">Month 1</div>
+                            <div>Game Started - Good luck!</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Result Popup -->
+    <div class="overlay" id="overlay"></div>
+    <div class="result-popup" id="resultPopup">
+        <div class="result-icon" id="resultIcon">✅</div>
+        <div class="result-title" id="resultTitle">Good Choice!</div>
+        <div class="result-text" id="resultText">You made a smart financial decision.</div>
+        <div class="impact-display">
+            <div class="impact-item">
+                <span>Credit Score:</span>
+                <span class="impact-positive" id="scoreImpact">+10</span>
+            </div>
+            <div class="impact-item">
+                <span>Savings:</span>
+                <span class="impact-positive" id="savingsImpact">+₹1000</span>
+            </div>
+            <div class="impact-item">
+                <span>XP Gained:</span>
+                <span class="impact-positive" id="xpImpact">+20</span>
+            </div>
+        </div>
+        <button class="btn btn-large" onclick="nextScenario()" style="width: 100%;">CONTINUE →</button>
+    </div>
+
+    <script>
+        // Game State
+        let gameState = {
+            creditScore: 500,
+            savings: 0,
+            income: 25000,
+            month: 1,
+            level: 1,
+            xp: 0,
+            streak: 0,
+            currentScenario: 0
+        };
+
+        // Learning Tips Database
+        const learningTips = {
+            payment: {
+                title: "💳 Payment History (35%)",
+                text: "The most important factor! Paying bills on time shows lenders you're responsible. Even one missed payment can drop your score by 100 points."
+            },
+            utilization: {
+                title: "💰 Credit Utilization (30%)",
+                text: "Keep credit card balances below 30% of your limit. Using ₹3,000 on a ₹10,000 limit card is ideal. High utilization signals financial stress."
+            },
+            savings: {
+                title: "🏦 Emergency Fund",
+                text: "Save 3-6 months of expenses. This prevents you from using credit cards during emergencies, protecting your credit score."
+            },
+            debt: {
+                title: "📊 Good Debt vs Bad Debt",
+                text: "Good debt: Education loans, home loans (build assets). Bad debt: High-interest credit cards, payday loans (no asset, high cost)."
+            },
+            income: {
+                title: "💼 Income Stability",
+                text: "Lenders love stable income! Staying at one job builds trust. Side hustles are great but diversify income streams carefully."
+            }
+        };
+
+        // Scenario Database
+        const scenarios = [
+            {
+                id: 1,
+                title: "💳 First Credit Card Offer",
+                text: "A bank offers you your first credit card with ₹10,000 limit and 3% monthly interest (36% yearly). What do you do?",
+                choices: [
+                    {
+                        text: "Accept and use it wisely for small purchases, paying full balance monthly",
+                        icon: "✅",
+                        impact: "Build payment history carefully",
+                        effects: { score: 15, xp: 30, savings: 0 },
+                        feedback: "Smart! Using credit responsibly builds your score. Keep utilization below 30% and always pay on time.",
+                        tip: "payment"
+                    },
+                    {
+                        text: "Accept and max it out immediately for a new phone",
+                        icon: "⚠️",
+                        impact: "High utilization hurts score",
+                        effects: { score: -25, xp: 10, savings: -8000 },
+                        feedback: "Ouch! Maxing out your card (100% utilization) tanks your score. Plus, high interest will cost you ₹3,000+ extra.",
+                        tip: "utilization"
+                    },
+                    {
+                        text: "Decline - you don't trust credit cards yet",
+                        icon: "❌",
+                        impact: "Miss chance to build credit history",
+                        effects: { score: 0, xp: 5, savings: 0 },
+                        feedback: "Playing safe, but credit history length matters (15% of score). You'll need to start sometime!",
+                        tip: "payment"
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: "📱 Unexpected Phone Breakdown",
+                text: `Your phone broke! New one costs ₹15,000. Your savings: ₹${gameState.savings.toLocaleString()}. Income: ₹${gameState.income.toLocaleString()}.`,
+                choices: [
+                    {
+                        text: "Use credit card and pay EMI (₹3,000/month for 6 months = ₹18,000 total)",
+                        icon: "💳",
+                        impact: "Interest adds ₹3,000 cost",
+                        effects: { score: -5, xp: 10, savings: 0 },
+                        feedback: "EMIs have hidden costs! ₹3,000 extra interest. Better to save or buy cheaper phone.",
+                        tip: "debt"
+                    },
+                    {
+                        text: "Buy a used phone for ₹5,000 cash",
+                        icon: "✅",
+                        impact: "Smart budgeting",
+                        effects: { score: 5, xp: 25, savings: -5000 },
+                        feedback: "Excellent! You avoided debt and saved ₹10,000. This is smart budgeting. Your credit score improves from good decisions.",
+                        tip: "savings"
+                    },
+                    {
+                        text: "Wait and save ₹5,000/month for 3 months, use basic phone meanwhile",
+                        icon: "🎯",
+                        impact: "Patience pays off",
+                        effects: { score: 10, xp: 35, savings: -15000 },
+                        feedback: "Best choice! Delayed gratification + no interest paid. You've learned financial discipline!",
+                        tip: "savings"
+                    }
+                ]
+            },
+            {
+                id: 3,
+                title: "🏠 Rent Due Tomorrow!",
+                text: "Rent is ₹8,000 due tomorrow. You have ₹6,000 in savings. Your salary comes in 5 days.",
+                choices: [
+                    {
+                        text: "Use credit card for rent (₹8,000), pay when salary arrives",
+                        icon: "💳",
+                        impact: "Short-term solution, interest free if paid in 5 days",
+                        effects: { score: 5, xp: 15, savings: 0 },
+                        feedback: "Acceptable! As long as you pay within the grace period (25-30 days), no interest. But risky if you forget.",
+                        tip: "payment"
+                    },
+                    {
+                        text: "Ask landlord for 5-day extension, pay from salary",
+                        icon: "✅",
+                        impact: "Honest communication",
+                        effects: { score: 10, xp: 30, savings: 0 },
+                        feedback: "Great! Honest communication beats debt. Most landlords understand. Builds trust without credit card risk.",
+                        tip: "payment"
+                    },
+                    {
+                        text: "Borrow ₹2,000 from friend, pay rent on time",
+                        icon: "🤝",
+                        impact: "Maintains payment history",
+                        effects: { score: 8, xp: 20, savings: -8000 },
+                        feedback: "Good! Payment history is crucial (35% of score). Just make sure to repay your friend quickly to maintain trust.",
+                        tip: "payment"
+                    }
+                ]
+            },
+            {
+                id: 4,
+                title: "💼 Side Hustle Opportunity",
+                text: `A friend offers freelance work: ₹10,000/month extra, but takes 10 hours/week. Your current income: ₹${gameState.income.toLocaleString()}.`,
+                choices: [
+                    {
+                        text: "Accept! More income = better financial stability",
+                        icon: "✅",
+                        impact: "Increase income stream",
+                        effects: { score: 15, xp: 40, savings: 10000, income: 10000 },
+                        feedback: "Excellent! Higher income improves debt-to-income ratio. Lenders see you can handle more credit. Save 50% of extra income!",
+                        tip: "income"
+                    },
+                    {
+                        text: "Decline - focus on main job for stability",
+                        icon: "⚖️",
+                        impact: "Job stability matters too",
+                        effects: { score: 5, xp: 10, savings: 0 },
+                        feedback: "Safe choice. Lenders value stable employment. But diversified income is a safety net during layoffs.",
+                        tip: "income"
+                    }
+                ]
+            },
+            {
+                id: 5,
+                title: "🎉 Bonus Alert!",
+                text: `You received ₹15,000 bonus! Your current savings: ₹${gameState.savings.toLocaleString()}. What's your plan?`,
+                choices: [
+                    {
+                        text: "Save entire ₹15,000 for emergency fund",
+                        icon: "🏦",
+                        impact: "Build financial cushion",
+                        effects: { score: 20, xp: 50, savings: 15000 },
+                        feedback: "Perfect! Emergency funds prevent credit card debt during crises. Aim for 6 months expenses (₹1.5 lakh in your case).",
+                        tip: "savings"
+                    },
+                    {
+                        text: "Spend ₹10,000 on shopping, save ₹5,000",
+                        icon: "🛍️",
+                        impact: "Lifestyle inflation",
+                        effects: { score: 0, xp: 15, savings: 5000 },
+                        feedback: "Common trap! 'Lifestyle inflation' prevents wealth building. Try 50-30-20 rule: 50% needs, 30% wants, 20% savings.",
+                        tip: "savings"
+                    },
+                    {
+                        text: "Pay off any credit card debt first, save rest",
+                        icon: "💳",
+                        impact: "Debt elimination priority",
+                        effects: { score: 25, xp: 60, savings: 15000 },
+                        feedback: "Best choice! Credit card debt at 36% APR costs more than you earn. Always pay high-interest debt first!",
+                        tip: "debt"
+                    }
+                ]
+            },
+            {
+                id: 6,
+                title: "🚗 Friend Needs Loan",
+                text: "Close friend asks to borrow ₹20,000 for 6 months. Your savings: ₹" + gameState.savings.toLocaleString(),
+                choices: [
+                    {
+                        text: "Lend if savings > ₹30,000, else politely decline",
+                        icon: "✅",
+                        impact: "Protect emergency fund",
+                        effects: { score: 10, xp: 30, savings: gameState.savings > 30000 ? -20000 : 0 },
+                        feedback: gameState.savings > 30000 ? "Smart! You have buffer left. Get it in writing though!" : "Wise decision. Never compromise your emergency fund.",
+                        tip: "savings"
+                    },
+                    {
+                        text: "Lend without thinking - they're family!",
+                        icon: "❤️",
+                        impact: "Risky move",
+                        effects: { score: -10, xp: 10, savings: -20000 },
+                        feedback: "Kind heart, but risky! 70% of personal loans to friends/family are never repaid. Always keep emergency buffer.",
+                        tip: "savings"
+                    },
+                    {
+                        text: "Offer ₹5,000 gift instead of loan",
+                        icon: "🎁",
+                        impact: "Compromise solution",
+                        effects: { score: 5, xp: 25, savings: -5000 },
+                        feedback: "Creative! Gifting small amount helps without risking friendship or finances. Clear boundaries matter.",
+                        tip: "savings"
+                    }
+                ]
+            },
+            {
+                id: 7,
+                title: "📊 Credit Limit Increase Offer",
+                text: `Bank offers to increase credit limit from ₹10,000 to ₹50,000. Your current utilization: ${Math.round((5000/10000)*100)}%.`,
+                choices: [
+                    {
+                        text: "Accept - lower utilization % is good for score",
+                        icon: "✅",
+                        impact: "Improves credit utilization ratio",
+                        effects: { score: 20, xp: 40, savings: 0 },
+                        feedback: "Excellent understanding! If you owe ₹5,000: 5k/10k = 50% (bad) vs 5k/50k = 10% (great). Just don't spend more!",
+                        tip: "utilization"
+                    },
+                    {
+                        text: "Accept and celebrate by spending more",
+                        icon: "🛍️",
+                        impact: "Temptation trap",
+                        effects: { score: -30, xp: 10, savings: -15000 },
+                        feedback: "Classic trap! Higher limit doesn't mean 'free money'. You'll pay 36% interest. Credit is a tool, not income.",
+                        tip: "utilization"
+                    },
+                    {
+                        text: "Decline - don't want temptation",
+                        icon: "🚫",
+                        impact: "Safe but misses opportunity",
+                        effects: { score: 0, xp: 15, savings: 0 },
+                        feedback: "Safe thinking, but you missed an easy score boost. Higher limits improve ratios if you have self-control.",
+                        tip: "utilization"
+                    }
+                ]
+            },
+            {
+                id: 8,
+                title: "🎓 Skill Upgrade Course",
+                text: "Online course promises ₹10k salary hike. Costs ₹25,000. You can pay cash or 0% EMI (12 months).",
+                choices: [
+                    {
+                        text: "Take 0% EMI - invest savings elsewhere",
+                        icon: "📈",
+                        impact: "Smart leverage of interest-free credit",
+                        effects: { score: 10, xp: 45, savings: 0 },
+                        feedback: "Smart! 0% EMI = free money over time (due to inflation). Keep cash for emergencies or investments. ROI = ₹10k/month!",
+                        tip: "debt"
+                    },
+                    {
+                        text: "Pay ₹25k cash upfront",
+                        icon: "💰",
+                        impact: "No debt approach",
+                        effects: { score: 5, xp: 30, savings: -25000 },
+                        feedback: "Debt-free is good, but you missed 0% EMI advantage. In finance, free credit = opportunity cost to invest.",
+                        tip: "debt"
+                    },
+                    {
+                        text: "Skip course - too expensive",
+                        icon: "❌",
+                        impact: "Miss income growth",
+                        effects: { score: 0, xp: 5, savings: 0 },
+                        feedback: "Short-term thinking! ₹25k investment → ₹10k/month extra = recovered in 3 months. Investing in yourself has best ROI.",
+                        tip: "income"
+                    }
+                ]
+            },
+            {
+                id: 9,
+                title: "🏦 Fixed Deposit vs Debt",
+                text: `You have ₹30,000 savings and ₹15,000 credit card debt (36% APR). FD gives 7% returns. What to do?`,
+                choices: [
+                    {
+                        text: "Pay off entire debt first",
+                        icon: "✅",
+                        impact: "Math wins: 36% cost > 7% gain",
+                        effects: { score: 30, xp: 60, savings: -15000 },
+                        feedback: "Perfect math! Paying 36% debt saves more than earning 7%. Net benefit = 29% gain. You saved ₹5,400/year!",
+                        tip: "debt"
+                    },
+                    {
+                        text: "Keep debt, put all in FD for 'security'",
+                        icon: "🏦",
+                        impact: "Emotional vs logical decision",
+                        effects: { score: -15, xp: 20, savings: 30000 },
+                        feedback: "Emotional trap! You're losing 29% net (36% paid - 7% earned). High-interest debt is emergency #1.",
+                        tip: "debt"
+                    },
+                    {
+                        text: "Pay ₹10k debt, keep ₹20k emergency fund",
+                        icon: "⚖️",
+                        impact: "Balanced approach",
+                        effects: { score: 15, xp: 40, savings: -10000 },
+                        feedback: "Balanced! Keeping ₹20k buffer is smart. Pay remaining debt from next month's income. Risk management + debt reduction.",
+                        tip: "savings"
+                    }
+                ]
+            },
+            {
+                id: 10,
+                title: "🎊 FINAL CHALLENGE: Dream Purchase",
+                text: `Score: ${gameState.creditScore}. You want ₹1 lakh item. Savings: ₹${gameState.savings.toLocaleString()}. Income: ₹${gameState.income.toLocaleString()}. Show what you learned!`,
+                choices: [
+                    {
+                        text: "Save ₹20k/month for 5 months, buy cash",
+                        icon: "🎯",
+                        impact: "Master delayed gratification",
+                        effects: { score: 40, xp: 100, savings: -100000 },
+                        feedback: "🏆 MASTER LEVEL! You've learned discipline. Delayed gratification = wealth building secret. You're ready for real world!",
+                        tip: "savings"
+                    },
+                    {
+                        text: "Take personal loan at 14% for 12 months",
+                        icon: "💳",
+                        impact: "Calculated debt",
+                        effects: { score: 10, xp: 50, savings: 0 },
+                        feedback: "Acceptable if it's appreciating asset (laptop for freelancing). But ₹14k interest cost! Better to save.",
+                        tip: "debt"
+                    },
+                    {
+                        text: "Use credit card, convert to EMI at 3%/month (36% APR!)",
+                        icon: "⚠️",
+                        impact: "Expensive choice",
+                        effects: { score: -20, xp: 20, savings: 0 },
+                        feedback: "Review: 36% APR = ₹36k extra! You'd pay ₹1.36 lakh for ₹1 lakh item. Credit card EMI ≠ cheap.",
+                        tip: "debt"
+                    },
+                    {
+                        text: "Skip purchase - not essential right now",
+                        icon: "✅",
+                        impact: "Needs vs wants clarity",
+                        effects: { score: 25, xp: 70, savings: 0 },
+                        feedback: "Wise! Distinguishing needs vs wants is financial maturity. Focus on building wealth, luxuries come naturally.",
+                        tip: "savings"
+                    }
+                ]
+            }
+        ];
+
+        // Theme Toggle
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            html.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+            document.getElementById('themeToggle').textContent = current === 'dark' ? '🌙' : '☀️';
+        });
+
+        // Start Game
+        function startGame() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('gameDashboard').style.display = 'block';
+            loadScenario(0);
+            updateDashboard();
+        }
+
+        // Load Scenario
+        function loadScenario(index) {
+            if (index >= scenarios.length) {
+                endGame();
+                return;
+            }
+
+            const scenario = scenarios[index];
+            gameState.currentScenario = index;
+            gameState.month = index + 1;
+
+            // Update scenario text with dynamic values
+            let scenarioText = scenario.text;
+            scenarioText = scenarioText.replace(/₹\d+,?\d*/g, (match) => {
+                // Keep original formatting but update if it references gameState
+                return match;
+            });
+
+            const scenarioArea = document.getElementById('scenarioArea');
+            scenarioArea.innerHTML = `
+                <div class="scenario-card">
+                    <div class="scenario-title">${scenario.title}</div>
+                    <div class="scenario-text">${scenarioText}</div>
+                </div>
+                <div class="choices-container" id="choicesContainer"></div>
+            `;
+
+            const choicesContainer = document.getElementById('choicesContainer');
+            scenario.choices.forEach((choice, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'choice-btn';
+                btn.innerHTML = `
+                    <span class="choice-icon">${choice.icon}</span>
+                    <strong>${choice.text}</strong>
+                    <span class="choice-impact">💡 Impact: ${choice.impact}</span>
+                `;
+                btn.onclick = () => handleChoice(choice);
+                choicesContainer.appendChild(btn);
+            });
+
+            updateDashboard();
+        }
+
+        // Handle Choice
+        function handleChoice(choice) {
+            // Apply effects
+            gameState.creditScore += choice.effects.score;
+            gameState.savings += choice.effects.savings;
+            gameState.xp += choice.effects.xp;
+            if (choice.effects.income) gameState.income += choice.effects.income;
+
+            // Streak logic
+            if (choice.effects.score > 0) {
+                gameState.streak++;
+            } else if (choice.effects.score < 0) {
+                gameState.streak = 0;
+            }
+
+            // Level up check
+            if (gameState.xp >= gameState.level * 100) {
+                gameState.level++;
+                gameState.xp = 0;
+            }
+
+            // Bounds
+            gameState.creditScore = Math.max(300, Math.min(850, gameState.creditScore));
+            gameState.savings = Math.max(0, gameState.savings);
+
+            // Show result popup
+            showResult(choice);
+
+            // Add to event log
+            addEventLog(choice);
+
+            // Update learning tip
+            updateLearningTip(choice.tip);
+
+            updateDashboard();
+        }
+
+        // Show Result
+        function showResult(choice) {
+            const isGood = choice.effects.score >= 0;
+            
+            document.getElementById('resultIcon').textContent = isGood ? '🎉' : '😬';
+            document.getElementById('resultTitle').textContent = isGood ? 'Good Choice!' : 'Oops! Learning Moment';
+            document.getElementById('resultText').textContent = choice.feedback;
+            
+            document.getElementById('scoreImpact').textContent = (choice.effects.score >= 0 ? '+' : '') + choice.effects.score;
+            document.getElementById('scoreImpact').className = choice.effects.score >= 0 ? 'impact-positive' : 'impact-negative';
+            
+            document.getElementById('savingsImpact').textContent = (choice.effects.savings >= 0 ? '+' : '') + '₹' + Math.abs(choice.effects.savings).toLocaleString();
+            document.getElementById('savingsImpact').className = choice.effects.savings >= 0 ? 'impact-positive' : 'impact-negative';
+            
+            document.getElementById('xpImpact').textContent = '+' + choice.effects.xp;
+            
+            document.getElementById('overlay').classList.add('show');
+            document.getElementById('resultPopup').classList.add('show');
+        }
+
+        // Next Scenario
+        function nextScenario() {
+            document.getElementById('overlay').classList.remove('show');
+            document.getElementById('resultPopup').classList.remove('show');
+            loadScenario(gameState.currentScenario + 1);
+        }
+
+        // Update Dashboard
+        function updateDashboard() {
+            document.getElementById('creditScore').textContent = gameState.creditScore;
+            document.getElementById('savings').textContent = '₹' + (gameState.savings / 1000).toFixed(0) + 'k';
+            document.getElementById('income').textContent = '₹' + (gameState.income / 1000).toFixed(0) + 'k';
+            document.getElementById('streak').textContent = gameState.streak;
+            document.getElementById('month').textContent = gameState.month;
+            document.getElementById('level').textContent = gameState.level;
+            document.getElementById('xp').textContent = gameState.xp;
+            
+            const xpPercent = (gameState.xp / (gameState.level * 100)) * 100;
+            document.getElementById('xpBar').style.width = xpPercent + '%';
+        }
+
+        // Update Learning Tip
+        function updateLearningTip(tipKey) {
+            const tip = learningTips[tipKey];
+            if (tip) {
+                document.getElementById('learningTip').innerHTML = `
+                    <div class="tip-title">${tip.title}</div>
+                    <p>${tip.text}</p>
+                `;
+            }
+        }
+
+        // Add Event Log
+        function addEventLog(choice) {
+            const log = document.getElementById('eventLog');
+            const event = document.createElement('div');
+            event.className = 'event-item';
+            event.innerHTML = `
+                <div class="event-time">Month ${gameState.month}</div>
+                <div>${choice.text.substring(0, 50)}... ${choice.effects.score >= 0 ? '✅' : '⚠️'}</div>
+            `;
+            log.insertBefore(event, log.firstChild);
+        }
+
+        // End Game
+        function endGame() {
+            const scenarioArea = document.getElementById('scenarioArea');
+            let grade = '';
+            let message = '';
+
+            if (gameState.creditScore >= 800) {
+                grade = 'EXCELLENT';
+                message = '🏆 MASTER! You understand finance like a pro! Your decisions show maturity and discipline.';
+            } else if (gameState.creditScore >= 700) {
+                grade = 'VERY GOOD';
+                message = '🎯 GREAT JOB! You made mostly smart choices. A few more months and you\'ll be at 800+!';
+            } else if (gameState.creditScore >= 600) {
+                grade = 'GOOD';
+                message = '👍 SOLID! You learned the basics. Review your mistakes and try again for higher score.';
+            } else {
+                grade = 'NEEDS WORK';
+                message = '💪 KEEP LEARNING! Finance is tricky. Replay the game and read the tips carefully.';
+            }
+
+            scenarioArea.innerHTML = `
+                <div class="scenario-card">
+                    <div class="scenario-title">🎮 GAME COMPLETE!</div>
+                    <div class="scenario-text" style="text-align: center;">
+                        <div style="font-size: 3rem; margin: 20px 0;">
+                            ${gameState.creditScore >= 800 ? '🏆' : gameState.creditScore >= 700 ? '🎯' : gameState.creditScore >= 600 ? '👍' : '💪'}
+                        </div>
+                        <h2 style="font-family: var(--font-heading); font-size: 2rem; margin: 20px 0;">
+                            FINAL SCORE: ${gameState.creditScore}
+                        </h2>
+                        <h3 style="font-family: var(--font-heading); color: var(--secondary);">
+                            ${grade}
+                        </h3>
+                        <p style="margin: 20px 0; font-size: 1.2rem;">
+                            ${message}
+                        </p>
+                        <div style="margin-top: 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+                            <div style="background: rgba(255,255,255,0.2); padding: 15px; border: 3px solid rgba(255,255,255,0.3);">
+                                <div style="font-size: 0.8rem;">Total Savings</div>
+                                <div style="font-size: 1.5rem; font-weight: 700;">₹${(gameState.savings/1000).toFixed(0)}k</div>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.2); padding: 15px; border: 3px solid rgba(255,255,255,0.3);">
+                                <div style="font-size: 0.8rem;">Good Decisions</div>
+                                <div style="font-size: 1.5rem; font-weight: 700;">${gameState.streak}</div>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.2); padding: 15px; border: 3px solid rgba(255,255,255,0.3);">
+                                <div style="font-size: 0.8rem;">Level Reached</div>
+                                <div style="font-size: 1.5rem; font-weight: 700;">${gameState.level}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn btn-large" onclick="resetGame()">🔄 PLAY AGAIN</button>
+                    <button class="btn btn-large" onclick="window.history.back()" style="margin-left: 15px;">← BACK TO DASHBOARD</button>
+                </div>
+            `;
+        }
+
+        // Reset Game
+        function resetGame() {
+            gameState = {
+                creditScore: 500,
+                savings: 0,
+                income: 25000,
+                month: 1,
+                level: 1,
+                xp: 0,
+                streak: 0,
+                currentScenario: 0
+            };
+            document.getElementById('eventLog').innerHTML = `
+                <div class="event-item">
+                    <div class="event-time">Month 1</div>
+                    <div>Game Started - Good luck!</div>
+                </div>
+            `;
+            startGame();
+        }
+    </script>
+</body>
+</html>

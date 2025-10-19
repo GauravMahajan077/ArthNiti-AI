@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArthNiti - Finance Education Hub</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="learn.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,500;9..40,700&family=Space+Mono&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <img src="logo.png" alt="ArthNiti Logo" class="logo-image">
+                <span>ArthNiti</span>
+            </div>
+            <nav class="nav">
+                <button class="nav-btn" onclick="window.location.href='index.html'">🏠 HOME</button>
+                <button class="nav-btn" onclick="window.location.href='finance-manager.html'">💰 FINANCE</button>
+                <button class="nav-btn" onclick="window.location.href='credity.html'">🎮 CREDIT CLASH</button>
+                <button class="nav-btn">SETTINGS</button>
+                <button class="nav-btn" id="theme-toggle">🌙</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            
+            <!-- EDUCATION HERO -->
+            <section class="education-hero">
+                <h1 class="glitch" data-text="FINANCE EDUCATION HUB">
+                    FINANCE EDUCATION HUB
+                </h1>
+                <p class="subtitle">Learn from experts and boost your financial literacy 🎓</p>
+            </section>
+
+            <!-- SEARCH BAR -->
+            <section class="search-section">
+                <div class="search-bar">
+                    <input 
+                        type="text" 
+                        id="videoSearchInput" 
+                        class="search-input" 
+                        placeholder="Search finance topics... (e.g., budgeting, investing)"
+                        onkeypress="if(event.key === 'Enter') searchVideos()"
+                    >
+                    <button class="search-btn" onclick="searchVideos()">🔍 SEARCH</button>
+                </div>
+
+                <div class="topic-filters">
+                    <button class="topic-btn active" onclick="loadTopicVideos('personal finance basics')">💰 Basics</button>
+                    <button class="topic-btn" onclick="loadTopicVideos('budgeting tips')">📊 Budgeting</button>
+                    <button class="topic-btn" onclick="loadTopicVideos('credit score improvement')">📈 Credit Score</button>
+                    <button class="topic-btn" onclick="loadTopicVideos('investing for beginners')">💼 Investing</button>
+                    <button class="topic-btn" onclick="loadTopicVideos('saving money strategies')">🏦 Saving</button>
+                    <button class="topic-btn" onclick="loadTopicVideos('debt management')">💳 Debt</button>
+                </div>
+            </section>
+
+            <!-- VIDEO PLAYER MODAL -->
+            <div class="video-modal" id="videoModal" style="display: none;">
+                <div class="video-modal-overlay" onclick="closeVideoPlayer()"></div>
+                <div class="video-modal-content">
+                    <div class="video-modal-header">
+                        <h3 id="modalVideoTitle">Video Title</h3>
+                        <button class="close-btn" onclick="closeVideoPlayer()">✕</button>
+                    </div>
+                    <div class="video-player-wrapper">
+                        <iframe 
+                            id="videoPlayer" 
+                            width="100%" 
+                            height="100%" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                    <div class="video-modal-info">
+                        <p class="video-modal-channel" id="modalVideoChannel">Channel Name</p>
+                        <p class="video-modal-description" id="modalVideoDescription">Video description...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIDEOS GRID -->
+            <section class="videos-section">
+                <div id="videosContainer">
+                    <div class="loading-videos">
+                        <div class="pixel-loader"></div>
+                        <p style="font-family: var(--font-heading); margin-top: 20px;">Loading educational content...</p>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 ArthNiti | MUMBAI HACKS 2025</p>
+            <p class="footer-tagline">INTELLIGENCE MEETS INCLUSION</p>
+            
+            <div class="team-section">
+                <p class="team-title">⚡ CRAFTED BY INNOVATORS ⚡</p>
+                <div class="team-grid">
+                    <div class="team-member">
+                        AKASH KAPRE
+                        <span class="team-member-role">🎨 DESIGNER</span>
+                    </div>
+                    <div class="team-member">
+                        SURAJ GUPTA
+                        <span class="team-member-role">💻 ENGINEER</span>
+                    </div>
+                    <div class="team-member">
+                        YASH JOGDAND
+                        <span class="team-member-role">👑 LEADER</span>
+                    </div>
+                    <div class="team-member">
+                        GAURAV MAHAJAN
+                        <span class="team-member-role">🧠 ARCHITECT</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="education.js"></script>
+</body>
+</html>

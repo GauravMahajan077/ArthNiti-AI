@@ -1,0 +1,10 @@
+{
+  "user_1_1729380000": {
+    "email": "example@email.com",
+    "password": "hashed_password_here",
+    "name": "John Doe",
+    "phone": null,
+    "created_at": "2025-10-19T20:16:44",
+    "financial_data": {}
+  }
+}

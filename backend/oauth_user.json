@@ -1,0 +1,11 @@
+{
+  "1234567890abcdef": {
+    "email": "example@gmail.com",
+    "name": "John Doe",
+    "picture": "https://lh3.googleusercontent.com/...",
+    "google_id": "1234567890abcdef",
+    "created_at": "2025-10-19T20:16:44",
+    "last_login": "2025-10-19T20:16:44",
+    "financial_data": {}
+  }
+}

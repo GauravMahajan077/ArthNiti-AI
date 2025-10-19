@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Finance Manager - ArthNiti</title>
+    <style>
+        /* -----------------------------------------------------------
+           Neo-Brutalism — Cream, White & Grey palette
+           - Light mode: cream backgrounds with dark grey text
+           - Dark mode: dark grey backgrounds with cream text
+           ----------------------------------------------------------- */
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root{
+            /* Base colors (light theme) */
+            --primary: #4A4A4A;          /* medium grey */
+            --accent:  #E8E3D9;          /* cream */
+            --neutral-bg: #F5F1E8;       /* light cream */
+            --neutral-surface: #FFFFFF;  /* white */
+            --text: #2D2D2D;             /* dark grey text */
+
+            /* Derived colors */
+            --light: var(--neutral-bg);
+            --dark: var(--text);
+            --border-color: #2D2D2D;
+            --shadow-color: #2D2D2D;
+
+            /* Status colors - grey tints */
+            --status-pending: #F0F0F0;   /* light grey for pending */
+            --status-paid: #E5E5E5;      /* medium-light grey for paid */
+            --status-overdue: #D8D8D8;   /* darker grey for overdue */
+
+            --border: 4px solid var(--border-color);
+            --shadow: 8px 8px 0 var(--shadow-color);
+            --shadow-hover: 4px 4px 0 var(--shadow-color);
+
+            --hero-text: var(--dark);
+        }
+
+        /* Dark mode: dark grey backgrounds with cream text */
+        [data-theme="dark"]{
+            --neutral-bg: #2D2D2D;       /* dark grey background */
+            --neutral-surface: #3A3A3A;  /* slightly lighter grey for cards */
+            --text: #F5F1E8;             /* cream text */
+            --light: var(--neutral-bg);
+            --dark: var(--text);
+            --border-color: #E8E3D9;     /* cream borders */
+            --shadow-color: #E8E3D9;     /* cream shadows */
+            
+            --status-pending: #4A4A4A;   /* medium grey for pending */
+            --status-paid: #555555;      /* slightly lighter grey for paid */
+            --status-overdue: #606060;   /* lighter grey for overdue */
+
+            --hero-text: var(--text);
+        }
+
+        body {
+            font-family: 'Space Mono', monospace;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            -webkit-font-smoothing:antialiased;
+            -moz-osx-font-smoothing:grayscale;
+        }
+
+        .header {
+            background: var(--primary);
+            border-bottom: var(--border);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-shadow: 3px 3px 0 var(--shadow-color);
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: var(--border);
+            background: var(--neutral-surface);
+            color: var(--dark);
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.12s ease;
+            text-decoration: none;
+            display: inline-block;
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+
+        .btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-secondary {
+            background: var(--accent);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        [data-theme="dark"] .btn-secondary {
+            background: var(--accent);
+            color: var(--primary);
+            border-color: var(--accent);
+        }
+
+        .main-content { padding: 40px 0; }
+
+        .hero-section{
+            background: var(--accent);
+            border: var(--border);
+            box-shadow: var(--shadow);
+            padding: 40px;
+            margin-bottom: 40px;
+            text-align: center;
+            color: var(--hero-text);
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+
+        .loading-state { text-align:center; padding:40px; font-size:1.2rem; color:var(--dark); }
+
+        .error-state {
+            background: #8A8A8A;
+            color: #FFFFFF;
+            padding: 20px;
+            border: var(--border);
+            margin: 20px 0;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .widget {
+            background: var(--neutral-surface);
+            border: var(--border);
+            box-shadow: var(--shadow);
+            padding: 25px;
+            color: var(--dark);
+        }
+
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--border-color);
+        }
+
+        .widget-title { font-size: 1.3rem; text-transform: uppercase; }
+
+        .language-toggle { display: flex; gap: 5px; }
+
+        .lang-btn {
+            padding: 5px 12px;
+            border: 3px solid var(--border-color);
+            background: var(--neutral-surface);
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .lang-btn.active { background: var(--primary); color: var(--accent); border-color: var(--primary); }
+
+        .bill-list { display:flex; flex-direction:column; gap:15px; }
+
+        .bill-item {
+            background: var(--status-pending);
+            border: 3px solid var(--border-color);
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--dark);
+        }
+
+        .bill-item.paid { background: var(--status-paid); opacity: 0.98; }
+        .bill-item.overdue {
+            background: var(--status-overdue);
+            color: var(--dark);
+            font-weight: 700;
+        }
+
+        .bill-info { flex:1; }
+        .bill-name { font-size:1.1rem; font-weight:700; margin-bottom:5px; }
+        .bill-date { font-size:0.85rem; opacity:0.8; color:var(--border-color); }
+
+        .bill-amount { font-size:1.3rem; font-weight:700; color:var(--dark); }
+
+        .bill-actions { display:flex; gap:8px; margin-top:10px; }
+        .bill-btn {
+            padding:8px 16px;
+            border:3px solid var(--border-color);
+            background:var(--neutral-surface);
+            cursor:pointer;
+            font-family:inherit;
+            font-weight:700;
+            font-size:0.8rem;
+            color:var(--dark);
+        }
+        .bill-btn:hover { background: var(--border-color); color: var(--light); }
+
+        .streak-display {
+            text-align:center;
+            padding:30px;
+            background: var(--status-pending);
+            border: var(--border);
+            margin-bottom:20px;
+            color: var(--dark);
+        }
+
+        .streak-number {
+            font-size:4rem;
+            font-weight:700;
+            text-shadow: 3px 3px 0 var(--shadow-color);
+            color: var(--dark);
+        }
+
+        .streak-label { font-size:1.2rem; text-transform:uppercase; color: var(--dark); }
+
+        .reminder-list { display:flex; flex-direction:column; gap:12px; }
+        .reminder-item {
+            background: var(--neutral-surface);
+            border: 3px solid var(--border-color);
+            padding:12px;
+            display:flex;
+            align-items:center;
+            gap:12px;
+            color: var(--dark);
+        }
+
+        .reminder-icon { font-size:1.5rem; }
+        .reminder-text { flex:1; font-size:0.9rem; }
+
+        .snooze-btn {
+            padding:8px 16px;
+            border:3px solid var(--border-color);
+            background:var(--neutral-surface);
+            cursor:pointer;
+            font-family:inherit;
+            font-weight:700;
+            font-size:0.8rem;
+            color:var(--dark);
+        }
+        .snooze-btn:hover { background: var(--border-color); color: var(--light); }
+
+        .budget-bar {
+            width:100%;
+            height:40px;
+            background: var(--neutral-surface);
+            border:3px solid var(--border-color);
+            position:relative;
+            margin:20px 0;
+        }
+
+        .budget-fill {
+            height:100%;
+            background: var(--primary);
+            transition: width 0.5s;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-weight:700;
+            color:var(--accent);
+        }
+
+        .budget-stats { display:flex; justify-content:space-between; margin-top:10px; font-size:0.9rem; color:var(--dark); }
+
+        .ai-insight-box {
+            background: var(--neutral-surface);
+            border: var(--border);
+            padding:20px; margin-top:20px; color:var(--dark);
+        }
+
+        .achievement-grid {
+            display:grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap:15px; margin-top:15px;
+        }
+
+        .achievement {
+            background: var(--neutral-surface);
+            border:3px solid var(--border-color);
+            padding:15px;
+            text-align:center;
+            transition: all 0.18s ease;
+            color:var(--dark);
+        }
+
+        .achievement:hover { transform: scale(1.05); box-shadow: 4px 4px 0 var(--shadow-color); }
+
+        .achievement.locked { opacity:0.45; filter:grayscale(100%); }
+
+        .achievement-icon { font-size:2rem; margin-bottom:5px; }
+        .achievement-name { font-size:0.7rem; font-weight:700; }
+
+        .emergency-alert {
+            background: #8A8A8A;
+            border: var(--border);
+            color: #FFFFFF;
+            padding:20px;
+            margin-bottom:30px;
+            display:none;
+        }
+
+        .emergency-alert.active { display:block; animation: pulse 2s infinite; }
+
+        @keyframes pulse { 0%,100%{ opacity:1 } 50%{ opacity:0.8 } }
+
+        .category-tags { display:flex; flex-wrap:wrap; gap:10px; margin-top:15px; }
+        .category-tag { padding:8px 16px; border:3px solid var(--border-color); background:transparent; font-size:0.8rem; font-weight:700; color:var(--dark); }
+
+        .add-bill-form { background:var(--neutral-surface); border:3px solid var(--border-color); padding:15px; margin-top:15px; display:none; color:var(--dark); }
+        .add-bill-form.active { display:block; }
+
+        .form-input, .form-select {
+            width:100%; padding:10px; border:3px solid var(--border-color); margin-bottom:10px; font-family:inherit; color:var(--dark); background:var(--neutral-surface);
+        }
+
+        /* responsive */
+        @media (max-width:768px){
+            .hero-title { font-size:1.8rem; }
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .nav-buttons { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">ArthNiti Finance Manager</h1>
+                <div class="nav-buttons">
+                    <a href="index.html" class="btn">← BACK</a>
+                    <button class="btn btn-secondary" id="themeToggle">🌙</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero-section">
+                <h2 class="hero-title">🤖 AI-POWERED FINANCE AUTOMATION</h2>
+                <p class="hero-subtitle">Your personalized financial assistant</p>
+            </section>
+
+            <div id="loadingState" class="loading-state">
+                <div style="font-size: 3rem; margin-bottom: 20px;">⏳</div>
+                <p>Loading your financial data...</p>
+            </div>
+
+            <div id="errorState" class="error-state" style="display: none;">
+                <h3>⚠️ Error Loading Data</h3>
+                <p id="errorMessage"></p>
+                <button class="btn" onclick="location.reload()">RETRY</button>
+            </div>
+
+            <div id="emergencyAlert" class="emergency-alert">
+                <h3>⚠️ EMERGENCY SHIELD ACTIVATED</h3>
+                <p id="emergencyMessage"></p>
+            </div>
+
+            <div id="dashboardContent" style="display: none;">
+                <div class="dashboard-grid">
+                    <!-- Bill Tracker Widget -->
+                    <div class="widget">
+                        <div class="widget-header">
+                            <h3 class="widget-title">📋 Bill Tracker</h3>
+                            <div class="language-toggle">
+                                <button class="lang-btn active" data-lang="en">EN</button>
+                                <button class="lang-btn" data-lang="hi">हि</button>
+                            </div>
+                        </div>
+                        <div class="bill-list" id="billList"></div>
+                        <button class="btn" style="width: 100%; margin-top: 15px;" onclick="toggleAddBillForm()">+ ADD BILL</button>
+                        <div class="add-bill-form" id="addBillForm">
+                            <input type="text" id="billName" class="form-input" placeholder="Bill Name">
+                            <input type="number" id="billAmount" class="form-input" placeholder="Amount">
+                            <input type="date" id="billDueDate" class="form-input">
+                            <select id="billCategory" class="form-select">
+                                <option value="rent">Rent</option>
+                                <option value="utilities">Utilities</option>
+                                <option value="services">Services</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <button class="btn btn-secondary" onclick="addNewBill()">SAVE BILL</button>
+                        </div>
+                    </div>
+
+                    <!-- Streak Widget -->
+                    <div class="widget">
+                        <div class="widget-header">
+                            <h3 class="widget-title">🔥 Payment Streak</h3>
+                        </div>
+                        <div class="streak-display">
+                            <div class="streak-number" id="streakNumber">0</div>
+                            <div class="streak-label">DAYS ON TIME</div>
+                        </div>
+                        <div class="achievement-grid" id="achievementGrid"></div>
+                    </div>
+
+                    <!-- Smart Reminders Widget -->
+                    <div class="widget">
+                        <div class="widget-header">
+                            <h3 class="widget-title">🔔 Smart Reminders</h3>
+                        </div>
+                        <div class="reminder-list" id="reminderList"></div>
+                    </div>
+
+                    <!-- Budget Widget -->
+                    <div class="widget">
+                        <div class="widget-header">
+                            <h3 class="widget-title">💰 Monthly Budget</h3>
+                        </div>
+                        <div class="budget-bar">
+                            <div class="budget-fill" id="budgetFill"></div>
+                        </div>
+                        <div class="budget-stats" id="budgetStats"></div>
+                        <div class="ai-insight-box">
+                            <h4>🤖 AI Budget Insight</h4>
+                            <p id="budgetInsight"></p>
+                        </div>
+                    </div>
+
+                    <!-- AI Learning Widget -->
+                    <div class="widget">
+                        <div class="widget-header">
+                            <h3 class="widget-title">🧠 AI Learning Status</h3>
+                        </div>
+                        <div id="aiLearningStatus"></div>
+                    </div>
+
+                    <!-- Emergency Shield Widget -->
+                    <div class="widget">
+                        <div class="widget-header">
+                            <h3 class="widget-title">🛡️ Emergency Shield</h3>
+                        </div>
+                        <div id="emergencyShieldStatus"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const API_BASE = 'http://127.0.0.1:5000/api';
+        let currentLang = 'en';
+        let userData = null;
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeApp();
+            setupThemeToggle();
+            setupLanguageToggle();
+        });
+
+        async function initializeApp() {
+            try {
+                const storedUserData = sessionStorage.getItem('userData');
+                if (storedUserData) userData = JSON.parse(storedUserData);
+
+                await Promise.all([
+                    loadBills(),
+                    loadStreak(),
+                    loadReminders(),
+                    loadBudget(),
+                    loadAILearningStatus(),
+                    loadEmergencyShield()
+                ]);
+
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('dashboardContent').style.display = 'block';
+            } catch (error) {
+                showError(error.message || 'Unknown error');
+            }
+        }
+
+        async function loadBills() {
+            try {
+                const response = await fetch(`${API_BASE}/finance/bills`);
+                if (!response.ok) throw new Error('Failed to load bills');
+                const data = await response.json();
+                renderBills(data.bills);
+            } catch (error) {
+                console.error('Error loading bills:', error);
+            }
+        }
+
+        function renderBills(bills) {
+            const billList = document.getElementById('billList');
+            billList.innerHTML = '';
+            bills.forEach(bill => {
+                const billItem = document.createElement('div');
+                billItem.className = `bill-item ${bill.status}`;
+                billItem.innerHTML = `
+                    <div class="bill-info">
+                        <div class="bill-name">${bill.name}</div>
+                        <div class="bill-date">${formatDate(bill.due_date, bill.status)}</div>
+                    </div>
+                    <div>
+                        <div class="bill-amount">₹${bill.amount}${bill.status === 'paid' ? ' ✓' : ''}</div>
+                        ${bill.status === 'pending' ? `
+                            <div class="bill-actions">
+                                <button class="bill-btn" onclick="markAsPaid('${bill.id}')">PAY</button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+                billList.appendChild(billItem);
+            });
+        }
+
+        async function markAsPaid(billId) {
+            try {
+                const response = await fetch(`${API_BASE}/finance/mark-paid`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ bill_id: billId })
+                });
+                if (!response.ok) throw new Error('Failed to mark bill as paid');
+                const data = await response.json();
+                await loadBills();
+                await loadStreak();
+                if (data.achievement_unlocked) alert(`🎉 Achievement Unlocked: ${data.achievement_unlocked.name}!`);
+            } catch (error) {
+                alert('Error: ' + (error.message || 'Unknown error'));
+            }
+        }
+
+        async function loadStreak() {
+            try {
+                const response = await fetch(`${API_BASE}/finance/streak`);
+                if (!response.ok) throw new Error('Failed to load streak');
+                const data = await response.json();
+                document.getElementById('streakNumber').textContent = data.current_streak;
+                renderAchievements(data.achievements);
+            } catch (error) {
+                console.error('Error loading streak:', error);
+            }
+        }
+
+        function renderAchievements(achievements) {
+            const grid = document.getElementById('achievementGrid');
+            grid.innerHTML = '';
+            achievements.forEach(ach => {
+                const achDiv = document.createElement('div');
+                achDiv.className = `achievement ${!ach.unlocked ? 'locked' : ''}`;
+                achDiv.innerHTML = `
+                    <div class="achievement-icon">${ach.icon}</div>
+                    <div class="achievement-name">${ach.name}</div>
+                `;
+                grid.appendChild(achDiv);
+            });
+        }
+
+        async function loadReminders() {
+            try {
+                const response = await fetch(`${API_BASE}/finance/reminders`);
+                if (!response.ok) throw new Error('Failed to load reminders');
+                const data = await response.json();
+                renderReminders(data.reminders);
+            } catch (error) {
+                console.error('Error loading reminders:', error);
+            }
+        }
+
+        function renderReminders(reminders) {
+            const list = document.getElementById('reminderList');
+            list.innerHTML = '';
+            if (reminders.length === 0) {
+                list.innerHTML = '<p style="opacity: 0.6;">No pending reminders</p>';
+                return;
+            }
+            reminders.forEach(rem => {
+                const remDiv = document.createElement('div');
+                remDiv.className = 'reminder-item';
+                remDiv.innerHTML = `
+                    <span class="reminder-icon">${rem.icon}</span>
+                    <span class="reminder-text">${rem[`message_${currentLang}`]}</span>
+                    <button class="snooze-btn" onclick="snoozeReminder('${rem.id}')">SNOOZE</button>
+                `;
+                list.appendChild(remDiv);
+            });
+        }
+
+        async function snoozeReminder(remId) {
+            try {
+                const response = await fetch(`${API_BASE}/finance/snooze-reminder`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ reminder_id: remId })
+                });
+                if (!response.ok) throw new Error('Failed to snooze reminder');
+                await loadReminders();
+            } catch (error) {
+                alert('Error: ' + (error.message || 'Unknown error'));
+            }
+        }
+
+        async function loadBudget() {
+            try {
+                const response = await fetch(`${API_BASE}/finance/budget`);
+                if (!response.ok) throw new Error('Failed to load budget');
+                const data = await response.json();
+                renderBudget(data);
+            } catch (error) {
+                console.error('Error loading budget:', error);
+            }
+        }
+
+        function renderBudget(data) {
+            const fill = document.getElementById('budgetFill');
+            const stats = document.getElementById('budgetStats');
+            const insight = document.getElementById('budgetInsight');
+
+            fill.style.width = `${data.percentage_used}%`;
+            fill.textContent = `₹${data.spent} / ₹${data.total_budget}`;
+
+            stats.innerHTML = `
+                <span>Spent: ₹${data.spent}</span>
+                <span>Remaining: ₹${data.remaining}</span>
+            `;
+
+            insight.textContent = data[`ai_insight_${currentLang}`];
+        }
+
+        async function loadAILearningStatus() {
+            try {
+                const response = await fetch(`${API_BASE}/finance/ai-learning-status`);
+                if (!response.ok) throw new Error('Failed to load AI status');
+                const data = await response.json();
+                renderAILearning(data);
+            } catch (error) {
+                console.error('Error loading AI status:', error);
+            }
+        }
+
+        function renderAILearning(data) {
+            const container = document.getElementById('aiLearningStatus');
+            container.innerHTML = `
+                <div style="margin: 20px 0;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span>Payment Pattern</span>
+                        <span style="font-weight: 700;">${data.payment_pattern_accuracy}%</span>
+                    </div>
+                    <div style="height: 20px; background: var(--neutral-surface); border: 3px solid var(--border-color);">
+                        <div style="width: ${data.payment_pattern_accuracy}%; height: 100%; background: var(--primary);"></div>
+                    </div>
+                </div>
+                <div style="margin: 20px 0;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span>Spending Behavior</span>
+                        <span style="font-weight: 700;">${data.spending_behavior_accuracy}%</span>
+                    </div>
+                    <div style="height: 20px; background: var(--neutral-surface); border: 3px solid var(--border-color);">
+                        <div style="width: ${data.spending_behavior_accuracy}%; height: 100%; background: var(--primary);"></div>
+                    </div>
+                </div>
+                <p style="font-size: 0.85rem; opacity: 0.8; margin-top: 15px;">${data[`message_${currentLang}`]}</p>
+            `;
+        }
+
+        async function loadEmergencyShield() {
+            try {
+                const response = await fetch(`${API_BASE}/finance/emergency-shield`);
+                if (!response.ok) throw new Error('Failed to load emergency shield');
+                const data = await response.json();
+                renderEmergencyShield(data);
+
+                if (data.status === 'warning' || data.status === 'caution') {
+                    const alert = document.getElementById('emergencyAlert');
+                    document.getElementById('emergencyMessage').textContent = data[`message_${currentLang}`];
+                    alert.classList.add('active');
+                }
+            } catch (error) {
+                console.error('Error loading emergency shield:', error);
+            }
+        }
+
+        function renderEmergencyShield(data) {
+            const container = document.getElementById('emergencyShieldStatus');
+
+            const statusIcon = data.status === 'safe' ? '✅' : data.status === 'caution' ? '⚠️' : '🚨';
+            const statusColor = data.status === 'safe' ? 'var(--primary)' : data.status === 'caution' ? 'var(--text)' : 'var(--text)';
+
+            container.innerHTML = `
+                <div style="text-align:center; padding:20px;">
+                    <div style="font-size:3rem; margin-bottom:10px;">${statusIcon}</div>
+                    <h4 style="color:${statusColor}; margin-bottom:10px;">${data.status.toUpperCase()}</h4>
+                    <p style="font-size:0.9rem;">${data[`message_${currentLang}`]}</p>
+                </div>
+                <div style="background: transparent; border: 3px solid var(--border-color); padding:15px; margin-top:15px;">
+                    <p style="font-size:0.85rem;"><strong>Balance:</strong> ₹${data.current_balance}</p>
+                    <p style="font-size:0.85rem; margin-top:5px;"><strong>Upcoming Bills:</strong> ₹${data.upcoming_bills}</p>
+                    <p style="font-size:0.85rem; margin-top:5px;"><strong>Next Check:</strong> ${new Date(data.next_check).toLocaleString()}</p>
+                </div>
+            `;
+        }
+
+        function toggleAddBillForm(){ document.getElementById('addBillForm').classList.toggle('active'); }
+
+        async function addNewBill() {
+            const name = document.getElementById('billName').value;
+            const amount = document.getElementById('billAmount').value;
+            const dueDate = document.getElementById('billDueDate').value;
+            const category = document.getElementById('billCategory').value;
+
+            if (!name || !amount || !dueDate) { alert('Please fill all fields'); return; }
+
+            try {
+                const response = await fetch(`${API_BASE}/finance/bills`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, amount: parseFloat(amount), due_date: dueDate, category })
+                });
+                if (!response.ok) throw new Error('Failed to add bill');
+
+                document.getElementById('billName').value = '';
+                document.getElementById('billAmount').value = '';
+                document.getElementById('billDueDate').value = '';
+                toggleAddBillForm();
+                await loadBills();
+            } catch (error) {
+                alert('Error: ' + (error.message || 'Unknown error'));
+            }
+        }
+
+        function formatDate(dateStr, status) {
+            const date = new Date(dateStr);
+            const prefix = status === 'paid' ? 'Paid: ' : status === 'overdue' ? 'Overdue: ' : 'Due: ';
+            return prefix + date.toLocaleDateString('en-IN');
+        }
+
+        function setupThemeToggle() {
+            const themeToggle = document.getElementById('themeToggle');
+            const html = document.documentElement;
+
+            themeToggle.addEventListener('click', () => {
+                const current = html.getAttribute('data-theme');
+                const next = current === 'dark' ? 'light' : 'dark';
+                html.setAttribute('data-theme', next);
+                themeToggle.textContent = next === 'dark' ? '☀️' : '🌙';
+            });
+        }
+
+        function setupLanguageToggle() {
+            const langButtons = document.querySelectorAll('.lang-btn');
+            langButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    langButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentLang = btn.getAttribute('data-lang');
+
+                    loadReminders();
+                    loadBudget();
+                    loadAILearningStatus();
+                    loadEmergencyShield();
+                });
+            });
+        }
+
+        function showError(message) {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('errorState').style.display = 'block';
+            document.getElementById('errorMessage').textContent = message;
+        }
+
+        // Auto-refresh every 30 seconds
+        setInterval(() => {
+            loadReminders();
+            loadEmergencyShield();
+        }, 30000);
+    </script>
+</body>
+</html>
