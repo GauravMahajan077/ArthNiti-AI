@@ -710,4 +710,4 @@ if __name__ == '__main__':
     print("   └─ GET  /api/game/* (challenges, submit-score)")
     print("="*50 + "\n")
     
-    app.run
+    app.run()
